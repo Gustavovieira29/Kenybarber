@@ -1,0 +1,40 @@
+<!-- Exemplo de view.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Agendamentos</title>
+</head>
+<body>
+  <h1>Agendamentos</h1>
+  <table id="tabela-agendamentos" border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Data</th>
+        <!-- Adicione mais colunas conforme sua view -->
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch('/api/agendamentos')
+      .then(res => res.json())
+      .then(dados => {
+        const tbody = document.querySelector('#tabela-agendamentos tbody');
+        dados.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.nome}</td>
+            <td>${item.data}</td>
+            <!-- Adapte conforme os campos da sua view -->
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
