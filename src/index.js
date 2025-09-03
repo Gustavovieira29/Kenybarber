@@ -7,7 +7,7 @@ const db = require('./db.js'); // Sequelize
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-// Rota da API deve vir ANTES do router
+
 app.get('/api/agendamentos', async (req, res) => {
   try {
     const resultados = await db.query(`
