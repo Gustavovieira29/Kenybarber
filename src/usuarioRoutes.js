@@ -6,24 +6,24 @@ const db = require("./db"); // Sua conexão Sequelize
 
 // CREATE - Inserir usuário
 router.post("/usuarios", async (req, res) => {
-  const { nome, email } = req.body;
+  // CORREÇÃO: Adicionados os campos obrigatórios senha e telefone
+  const { nome_completo, email, senha, telefone } = req.body;
   try {
-    // Para inserir e pegar o ID, o ideal seria usar Models do Sequelize,
-    // mas com query crua para PostgreSQL, você pode usar a cláusula RETURNING.
     const result = await db.query(
-      'INSERT INTO usuarios (nome, email) VALUES (?, ?) RETURNING id',
+      // CORREÇÃO: Adicionadas as colunas na query SQL
+      'INSERT INTO usuarios (nome_completo, email, senha, telefone) VALUES (?, ?, ?, ?) RETURNING id',
       {
-        replacements: [nome, email],
+        replacements: [nome_completo, email, senha, telefone],
         type: db.QueryTypes.INSERT
       }
     );
-    // A resposta pode variar um pouco dependendo do driver.
-    // 'result' será um array.
+    
     const insertId = result[0][0].id;
-    res.status(201).json({ id: insertId, nome, email });
+    res.status(201).json({ id: insertId, nome_completo, email, telefone }); // Removido senha da resposta por segurança
 
   } catch (err) {
-    console.error(err);
+    // O erro real do banco de dados será exibido no seu terminal.
+    console.error("ERRO DETALHADO:", err);
     res.status(500).json({ erro: "Erro ao criar usuário." });
   }
 });
@@ -62,15 +62,16 @@ router.get("/usuarios/:id", async (req, res) => {
 // UPDATE - Atualizar usuário
 router.put("/usuarios/:id", async (req, res) => {
   const { id } = req.params;
-  const { nome, email } = req.body;
+  // CORREÇÃO: Adicionados os campos para atualização
+  const { nome_completo, email, senha, telefone } = req.body;
   try {
-    await db.query("UPDATE usuarios SET nome = ?, email = ? WHERE id = ?", {
-      replacements: [nome, email, id],
+    await db.query("UPDATE usuarios SET nome_completo = ?, email = ?, senha = ?, telefone = ? WHERE id = ?", {
+      replacements: [nome_completo, email, senha, telefone, id],
       type: db.QueryTypes.UPDATE,
     });
     res.json({ mensagem: "Usuário atualizado com sucesso" });
   } catch (err) {
-    console.error(err);
+    console.error("ERRO DETALHADO:", err);
     res.status(500).json({ erro: "Erro ao atualizar usuário." });
   }
 });
@@ -84,7 +85,8 @@ router.delete("/usuarios/:id", async (req, res) => {
       type: db.QueryTypes.DELETE,
     });
     res.json({ mensagem: "Usuário deletado com sucesso" });
-  } catch (err) {
+  } catch (err)
+    {
     console.error(err);
     res.status(500).json({ erro: "Erro ao deletar usuário." });
   }
