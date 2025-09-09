@@ -1,5 +1,3 @@
-// index.js - VERSÃO CORRETA E COM DIAGNÓSTICO
-
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -9,25 +7,19 @@ const router = require('./routes');
 const usuarioRoutes = require('./usuarioRoutes');
 const db = require('./db.js');
 
-// Middleware para interpretar JSON
 app.use(express.json());
 
-// *****************************************************************
-// ** DIAGNÓSTICO: Este código vai "espiar" todas as requisições **
-// *****************************************************************
 app.use((req, res, next) => {
   console.log(`[LOG] Requisição recebida: Método=${req.method}, URL=${req.originalUrl}`);
   next();
 });
-// *****************************************************************
 
-// Pasta pública para arquivos estáticos (CSS, imagens)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rotas de páginas HTML (/, /inicio, /agenda)
+// Rotas de páginas HTML
 app.use('/', router);
 
-// Rotas da API de usuários (é aqui que mora o /api/usuarios)
+// Rotas da API de usuários (/api/usuarios)
 app.use('/api', usuarioRoutes);
 
 // Rota da API de agendamentos
@@ -43,7 +35,7 @@ app.get('/api/agendamentos', async (req, res) => {
   }
 });
 
-// Tratador de erro 404 - DEVE SER A ÚLTIMA COISA
+// Tratador de erro 404
 app.use((req, res) => {
   console.log(`[LOG] Nenhuma rota encontrada para ${req.method} ${req.originalUrl}. Enviando 404.`);
   res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
