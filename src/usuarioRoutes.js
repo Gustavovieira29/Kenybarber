@@ -1,16 +1,14 @@
-// usuarioRoutes.js - CORRIGIDO
-
 const express = require("express");
 const router = express.Router();
-const db = require("./db"); // Sua conexão Sequelize
+const db = require("./db");
 
 // CREATE - Inserir usuário
 router.post("/usuarios", async (req, res) => {
-  // CORREÇÃO: Adicionados os campos obrigatórios senha e telefone
+
   const { nome_completo, email, senha, telefone } = req.body;
   try {
     const result = await db.query(
-      // CORREÇÃO: Adicionadas as colunas na query SQL
+    
       'INSERT INTO usuarios (nome_completo, email, senha, telefone) VALUES (?, ?, ?, ?) RETURNING id',
       {
         replacements: [nome_completo, email, senha, telefone],
@@ -19,10 +17,10 @@ router.post("/usuarios", async (req, res) => {
     );
     
     const insertId = result[0][0].id;
-    res.status(201).json({ id: insertId, nome_completo, email, telefone }); // Removido senha da resposta por segurança
+    res.status(201).json({ id: insertId, nome_completo, email, telefone }); 
 
   } catch (err) {
-    // O erro real do banco de dados será exibido no seu terminal.
+  
     console.error("ERRO DETALHADO:", err);
     res.status(500).json({ erro: "Erro ao criar usuário." });
   }
