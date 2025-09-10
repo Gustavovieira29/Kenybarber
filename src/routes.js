@@ -1,5 +1,3 @@
-// routes.js - VERSÃO CORRETA E LIMPA
-
 const express = require("express");
 const path = require("path");
 const router = express.Router();
@@ -18,6 +16,5 @@ router.get("/agenda", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "view.html"));
 });
 
-// NÃO COLOQUE O TRATADOR DE 404 AQUI
 
 module.exports = router;
